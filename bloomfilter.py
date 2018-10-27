@@ -10,6 +10,15 @@ class BloomFilter:
         self.size = size
         self.number_hashes = hash_num
 
+    # Function to add bad passwords to the filters
+    def add(self, item):
+        hash_function = ['sha512', 'sha384', 'sha256', 'sha224', 'md5']
+        for i in range(self.number_hashes):
+            hasher = getattr(hashlib, hash_function[i])  # Select hash function
+            hashed = int(hasher(item.encode('utf-8')).hexdigest(), 16) % self.size  # Hash and divide by size
+            self.bit_array[hashed] = True
+        return self
+
 
 # Function to parse input and bad password list
 def parser(any_file):
@@ -43,5 +52,6 @@ def main():
         bloom_filter3.add(pw)
         bloom_filter5.add(pw)
 
+    # Send the input passwords to be tested against the bloom filters and then written to output files
 
 main()
